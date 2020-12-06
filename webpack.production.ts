@@ -11,7 +11,7 @@ const config: Configuration = merge(common, {
     mode: environment,
     output: {
         path: resolve(__dirname, "build"),
-        publicPath: "/whats-that-flag/",
+        publicPath: "/animal-detector/",
         filename: "[name].bundle.js"
     },
     module: {
