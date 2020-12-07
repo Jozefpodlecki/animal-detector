@@ -6,7 +6,7 @@ import styles from "./footer.scss";
 
 const Footer = () => {
 
-    return <footer className={styles.header}>
+    return <footer className={styles.footer}>
     </footer>
 }
 
