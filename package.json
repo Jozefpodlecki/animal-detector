@@ -5,12 +5,14 @@
   "description": "",
   "scripts": {
     "build:development": "cross-env TS_NODE_PROJECT=\"tsconfig-webpack.json\" webpack --config webpack.development.ts",
+    "build:development:deploy": "cross-env TS_NODE_PROJECT=\"tsconfig-webpack.json\" webpack --config webpack.development.ts",
     "build:production": "cross-env TS_NODE_PROJECT=\"tsconfig-webpack.json\" webpack --config webpack.production.ts",
     "prettier-format": "prettier src/**/*.tsx --write",
     "lint": "eslint src --ext .ts,.tsx --fix",
     "test": "jest",
     "testlint": "tsc --noEmit && eslint '*/**/*.{ts,tsx}' --quiet --fix",
-    "start": "cross-env TS_NODE_PROJECT=\"tsconfig-webpack.json\" webpack-dev-server --config webpack.development.ts --open"
+    "start": "cross-env TS_NODE_PROJECT=\"tsconfig-webpack.json\" webpack-dev-server --config webpack.development.ts --open",
+    "start:production": "cross-env TS_NODE_PROJECT=\"tsconfig-webpack.json\" webpack-dev-server --config webpack.production.ts --open"
   },
   "license": "ISC",
   "dependencies": {
