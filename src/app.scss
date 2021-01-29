@@ -63,3 +63,20 @@
     padding: 10px;
     text-align: center;
 }
+
+.stats {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.statsClose {
+    cursor: pointer;
+}
+
+.statsIcon {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    cursor: pointer;
+}

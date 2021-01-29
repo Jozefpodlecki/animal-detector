@@ -3,12 +3,12 @@ import { mod, tensor, tensor4d } from '@tensorflow/tfjs';
 import * as tfvis from '@tensorflow/tfjs-vis';
 import { createModel } from './tensorflow';
 
-const importAll = (context: __WebpackModuleApi.RequireContext) => {
+const importAssets = (context: __WebpackModuleApi.RequireContext, transform: (module: any) => any) => {
     const dict = context.keys()
         .reduce<Record<string, string>>((acc, key) => {
             const module = context(key);
 
-            acc[key] = module.default;
+            acc[key] = transform(module);
 
             return acc;
         }, {});
@@ -17,13 +17,27 @@ const importAll = (context: __WebpackModuleApi.RequireContext) => {
 };
 
 const imagesContext = require.context(
-    "./../assets/images/animals",
+    "../assets/images/animals",
     false,
     /\.(webp|jfif|png|jpe?g|svg)$/,
     "sync"
 );
-const images = importAll(imagesContext);
+export const images = importAssets(imagesContext, pr => pr.default);
 const entries = Object.entries(images).slice(0, 4);
+
+export const resizeImage = (url: string, width: number, height: number) => new Promise((resolve,) => {
+    const image = new Image();
+    image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d")
+        canvas.width = width;
+        canvas.height = height;
+        context.drawImage(image, 0, 0, width, height)
+        const url = canvas.toDataURL("image/jpeg");
+        resolve(url);
+    }
+    image.src = url;
+});
 
 export const getRandomImage = () => {
     const index = Math.floor(Math.random() * entries.length);
@@ -157,3 +171,31 @@ export const predictAnimalFromImage = async (model: tf.LayersModel, imageSrc: st
     return [firstAnimal[0], secondAnimal[0]];
 }
 
+
+function createCanvas() {
+    if (typeof OffscreenCanvas !== 'undefined') {
+        return new OffscreenCanvas(300, 150);
+    }
+    else if (typeof document !== 'undefined') {
+        return document.createElement('canvas');
+    }
+    else {
+        throw new Error('Cannot create a canvas in this context');
+    }
+}
+
+export function getWebGlVersion() {
+    
+    let version = 0;
+    const canvas = createCanvas();
+    
+    if(canvas.getContext('webgl2')) {
+        return 2;
+    }
+
+    if(canvas.getContext('experimental-webgl')) {
+        return 1;
+    }
+    
+};
+//# sourceMappingURL=canvas_util.js

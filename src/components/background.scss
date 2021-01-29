@@ -1,0 +1,10 @@
+.background {
+    position: absolute;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    width: 100vw;
+    height: 100vh;
+    filter: brightness(0.5);
+    z-index: -1;
+}

@@ -1,15 +1,16 @@
 import {LayersModel, tensor4d} from '@tensorflow/tfjs';
 import React, { ChangeEvent, FunctionComponent, useEffect, useRef, useState } from "react";
 import Button from '@material-ui/core/Button';
-import { faPaw, faUpload } from "@fortawesome/free-solid-svg-icons";
+import { faBug, faPaw, faTimes, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NativeTypes } from 'react-dnd-html5-backend'
-import  { get, getImageData, getRandomImage, predictAnimalFromImage } from "api";
+import  { get, getImageData, getRandomImage, getWebGlVersion, predictAnimalFromImage } from "api";
 import styles from "./app.scss";
 import Header from "components/Header";
 import Footer from "components/Footer";
 import { useDrop } from "react-dnd";
 import Loader from "react-loader-spinner";
+import Background from 'components/Background';
 
 const App = () => {
     const fileRef = useRef<HTMLInputElement>();
@@ -64,23 +65,36 @@ const App = () => {
         imageSrc: "",
         model: null
     });
+    const [{
+        webGlVersion,
+        show,
+    }, setStats] = useState({
+        webGlVersion: 0,
+        show: false,
+    });
 
     useEffect(() => {
 
-        get(setState)
-            .then(model => {
-                setState(state => ({...state, model}));
+        const webGlVersion = getWebGlVersion();
 
-                const imageSrc = getRandomImage();
-                predictAnimalFromImage(model, imageSrc)
-                    .then(([predictedAnimal, secondGuess]) => {
-                        setState(state => ({...state, 
-                            imageSrc,
-                            predictedAnimal,
-                            secondGuess,
-                        }));
-                    });
-            })
+        setStats(state => ({
+            ...state,
+            webGlVersion,
+        }));
+        // get(setState)
+        //     .then(model => {
+        //         setState(state => ({...state, model}));
+
+        //         const imageSrc = getRandomImage();
+        //         predictAnimalFromImage(model, imageSrc)
+        //             .then(([predictedAnimal, secondGuess]) => {
+        //                 setState(state => ({...state, 
+        //                     imageSrc,
+        //                     predictedAnimal,
+        //                     secondGuess,
+        //                 }));
+        //             });
+        //     })
 
     }, []);
 
@@ -101,11 +115,24 @@ const App = () => {
             });
     }
 
+    const onToggleStats = () => {
+        setStats(state => ({...state, show: !state.show}));
+    }
+
     return <div className={styles.container}>
         <Header/>
+        <Background/>
+        {show ? <div className={styles.stats}>
+            {webGlVersion ? <div>Webgl Version: {webGlVersion}</div> : <div>No webgl support</div>}
+            <div onClick={onToggleStats} className={styles.statsClose}>
+                <FontAwesomeIcon icon={faTimes} size="2x"/>
+            </div>
+        </div> : <div onClick={onToggleStats} className={styles.statsIcon}>
+            <FontAwesomeIcon icon={faBug} size="2x"/>
+        </div>}
         <div className={styles.content}>
             {isLoading ? <div className={styles.loader}>
-                <Loader type="ThreeDots" color="#00BFFF" height={80} width={80} />
+                <Loader type="ThreeDots" color="#FFFFFF" height={80} width={80} />
                 <div>
                     {label}
                 </div>
